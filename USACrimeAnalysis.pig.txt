@@ -10,14 +10,16 @@ groupFBICd = group genIDCode by FBICode;
 
 countFBICd = foreach groupFBICd generate group AS FBICd , COUNT(genIDCde.FBICode) As Numofcases;
 
-store countFBICd into '/output/FBICOdeCount';
+store countFBICd into '/output/Proj1_Ans1';
 
 
 /* ******************* Problem 2 ******************/
 
 caseFBI32 = FILTER countFBICd by FBICd == '32';
 
-DUMP caseFBI32;
+store caseFBI32 inot '/output/Proj1_Ans2';
+
+-- ANSWER 76
 
 /* ******************* Problem 3 ******************/
 
@@ -27,16 +29,20 @@ groupTheftDis = group theftcrimes by District;
 
 countTheftDis = foreach groupTheftDis generate group AS Dist, COUNT(theftcrimes)As Numofcases;
 
-DUMP countTheftDis;
+store countTheftDis int '/output/Proj1_Ans3;
+
 
 /* ******************* Problem 4 ******************/
 
 genArrestDates = FOREACH crimedata GENERATE ID, ToDate(Date,'MM/dd/yyyy') As Crimedate;
 
-arrestCrimes = FILTER genArrestDates by (Arrest == 'true') AND (Crimedate >= '10/01/2014') AND (Crimedate <= '10/31/2015');
+arrestCrimes = FILTER genArrestDates by (Arrest == 'true') AND (Crimedate >= ToDate('10/01/2014 00:00:00 AM','MM/dd/yyyy HH:mm:ss a')) AND (Crimedate <= ToDate('10/31/2015 00:00:00 AM','MM/dd/yyyy HH:mm:ss a));
 
-countArrest = FOREACH ( GROUP arrestCrimes ALL) GENERATE COUNT(genArrestDates) AS totalArrestCrimes;
+countArrest = FOREACH ( GROUP arrestCrimes ALL) GENERATE COUNT (arrestCrimes) AS totalArrestCrimes;
 
+store countArrest into '/output/proj1_Ans4';
+
+Ans:  
 
 /**************************************************/
 
