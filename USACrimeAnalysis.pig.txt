@@ -1,0 +1,54 @@
+/* USA Crime Analysis PIG Script  */
+
+/* *******************  Problem  1 ***************** */
+
+crimedata = load '/inputfiles/USCrimes.csv' using PigStorage(',') (ID,CasNum,Date,Block,IUCR,PType,Des,LocDesc,Arrest,Dome,Beat,District,Ward,ComAr,FBICode,XCo,YCo,Year,UpdatedOn,Lat,Long,Coor);
+
+genIDCode = foreach crimedata generate ID,FBICode;
+
+groupFBICd = group genIDCode by FBICode;
+
+countFBICd = foreach groupFBICd generate group AS FBICd , COUNT(genIDCde.FBICode) As Numofcases;
+
+store countFBICd into '/output/FBICOdeCount';
+
+
+/* ******************* Problem 2 ******************/
+
+caseFBI32 = FILTER countFBICd by FBICd == '32';
+
+DUMP caseFBI32;
+
+/* ******************* Problem 3 ******************/
+
+theftcrimes = FILTER crimedata by (PType matches '.*THEFT.*' AND Arrest == 'true');
+
+groupTheftDis = group theftcrimes by District;
+
+countTheftDis = foreach groupTheftDis generate group AS Dist, COUNT(theftcrimes)As Numofcases;
+
+DUMP countTheftDis;
+
+/* ******************* Problem 4 ******************/
+
+genArrestDates = FOREACH crimedata GENERATE ID, ToDate(Date,'MM/dd/yyyy') As Crimedate;
+
+arrestCrimes = FILTER genArrestDates by (Arrest == 'true') AND (Crimedate >= '10/01/2014') AND (Crimedate <= '10/31/2015');
+
+countArrest = FOREACH ( GROUP arrestCrimes ALL) GENERATE COUNT(genArrestDates) AS totalArrestCrimes;
+
+
+/**************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
